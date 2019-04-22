@@ -1,0 +1,76 @@
+---
+title: "Clustering"
+author: "LaAnna Farnelli & Emma Foulkes"
+date: "4/16/2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+#install.packages("factoextra")
+```
+
+## FROM THE READING
+
+### k-Means Clustering
+
+```{r}
+data("USArrests")
+k2 <- kmeans(USArrests, centers = 2, nstart = 25)
+library(factoextra)
+library(dplyr)
+```
+```{r}
+fviz_cluster(k2, data = USArrests, repel=TRUE) #fviz_cluster visualizes clusters using the first two principle components to define the X-Y coordinates of each observation
+```
+```{r}
+fviz_cluster(k2, data = USArrests, repel=TRUE, choose.vars = c("UrbanPop", "Murder")) #display the clusters using two of the original variables
+```
+```{r}
+#try standardizing the data first using scale:
+Std_USArrests <- scale(USArrests)
+ks <- kmeans(Std_USArrests, centers = 4)
+fviz_cluster(ks, data = Std_USArrests, repel=TRUE, choose.vars = c("UrbanPop", "Murder"))
+```
+
+### How Many Clusters?
+
+Choosing the right number of clusters can be tricky. Three Strategies are the Elbow Method, the Silhouette Method, and the Gap Statistic.
+
+Elbow Method:
+
+```{r}
+#visualize the reduction in withiness or “wss” by the number of clusters used via the fviz_nbclust function:
+fviz_nbclust(USArrests, kmeans, method = "wss", k.max = 8)
+```
+This metric suggests either 2 or 3 clusters would be reasonable choices and additional clusters appear to offer little added benefit in terms of “withiness”.
+ 
+ 
+Silhouette Method:
+
+```{r}
+# average silhouette can be used to assess the choice of k:
+fviz_nbclust(USArrests, kmeans, method = "silhouette", k.max = 8)
+```
+The average silhouette metric suggests that using 2 clusters is optimal. 
+
+We can also use silhouettes to assess individual observations:
+
+```{r}
+library(cluster)
+set.seed(123)
+k2 <- kmeans(USArrests, centers = 2, nstart = 25)
+sil <- silhouette(k2$cluster, dist(USArrests), ordered = FALSE)
+row.names(sil) <- row.names(USArrests) # Needed to use label option
+fviz_silhouette(sil, label = TRUE)
+```
+
+Gap Statistic:
+
+```{r}
+fviz_nbclust(USArrests, kmeans, method = "gap", k.max = 8) #compares k=1 through k=8
+```
+
+## APPLICATIONS
