@@ -9,13 +9,16 @@ data$days_since <-  as.Date("2011-12-10") - dates ## Subtract from a reference d
 ## Keep only the minimum per customer
 Rec <- data %>% group_by(CustomerID) %>% summarise(min = min(days_since))
 ```
-Question 1: create object Freq containing the number of purchases by each customer
+Question 1: Creating new variables
 
+First, I create Freq containing the number of purchases by each customer:
 ```{r}
-
+#generate frequency table for InvoiceNo
+Freq<-
+#join to add Freq to my set
 ```
 
-create a Monetary variable, the total purchase amount spent by a customer during the span of these data
+I also want to create Monetary, the total purchase amount spent by a customer during the span of these data:
 
 ```{r}
 
@@ -46,6 +49,11 @@ Question 4: Constructing the Boxplots
 #add title “RFM Variable Distributions”.
 
 ```
+Hint: The command summarize(count = n()) will return the number of rows. If you supply a data.frame that was grouped by another variable, the command will return the number of rows for each unique value of the grouping variable
+
+Hint: To construct the boxplots in Question #4, you should consider using gather from the tidyr package to create a “long” version of your CD data.frame
+
+Hint: Your boxplot code might be similar to  ggplot(LCD, aes(y = SOMETHING)) + geom_boxplot() + coord_flip() + facet_grid(SOMETHING, scales = "free"). Note that boxplots can be created by providing only a Y variable, but not by providing only an X variable.
 
 Filtering and Transforming (from assignment sheet):
 
@@ -54,6 +62,10 @@ CD <- filter(CD, Mon > 0) # remove customers with negative monetary values (they
 CD$Mon <- log10(CD$Mon) # apply a log transformation based on the extreme right skew (large number of outliers)
 CD$Freq <- log10(CD$Freq)
 ```
+
+Hint: Use something like Rec = as.numeric(Rec$min) when constructing your CD data.frame. If you don’t coerce this variable’s type to numeric, it will give you problems in the clustering functions.
+
+
 
 Question 5: k-means clustering on the newly transformed data
 
@@ -68,3 +80,7 @@ Question 5: k-means clustering on the newly transformed data
 ```
 
            Description of the trends (thinking specifically about customer groups):
+           
+Comments from Prof. Miller: 
+ - Clustering functions, similiar to what saw with PCA, use all of the variables in the data.frame you supply them with. This means that you should remove ID variables like CustomerID or City/State when using clustering functions.
+ - When interpretting clustering results, we are primarily interested in describing what makes certain cluster members similar (ie: what do members of cluster #k have in common?)
