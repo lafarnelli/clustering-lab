@@ -1,6 +1,11 @@
 ### Application #2 - Evaluating Rural-Urban-Suburban Designations
 ```{r}
-
+data("midwest")
+## Restrict the variables used in the clustering
+midwest2 <- select(midwest, county, state, popdensity, 
+                   percwhite, percblack, percasian, perchsd, 
+                   percollege, percprof, percchildbelowpovert, 
+                   percadultpoverty, percelderlypoverty)
 ```
 Question 1: 
 
