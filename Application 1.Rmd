@@ -1,16 +1,3 @@
----
-title: "Clustering"
-author: "LaAnna Farnelli & Emma Foulkes"
-date: "4/16/2019"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-```{r}
-#install.packages("factoextra")
-```
 ### Application #1 - Customer Segmentation
 
 ```{r}
