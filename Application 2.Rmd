@@ -7,15 +7,18 @@ midwest2 <- select(midwest, county, state, popdensity,
                    percollege, percprof, percchildbelowpovert, 
                    percadultpoverty, percelderlypoverty)
 ```
-Question 1: On unscaled data (popdensity is a much larger contributor than any of the other variables), use elbow, silhouette, and gap statistic to evaluate the optimal number of clusters for the unscaled data. 
+Question 1: Evaluating optimal number of clusters for unscaled data: 
 
 ```{r}
+#elbow
 ```
 
 ```{r}
+#silhouette
 ```
 
 ```{r}
+#gap statistic
 ```
 Using 3 clusters does/doesn't seem reasonable because...
 
