@@ -1,1 +1,83 @@
+---
+title: "Clustering"
+author: "LaAnna Farnelli & Emma Foulkes"
+date: "4/16/2019"
+output: html_document
+---
 
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+```{r}
+#install.packages("factoextra")
+```
+### Application #1 - Customer Segmentation
+
+```{r}
+data <- read.csv("https://remiller1450.github.io/data/OnlineRetail.csv") ## This takes a long time, the data contain >500k records
+data <- data[complete.cases(data),] # restrict the data to records with complete information
+#derive Recency, Frequency, and Monetary value:
+dates <- as.Date(substr(data$InvoiceDate,1,10), "%m/%d/%Y") ## Extract only the date, specifying its format
+data$days_since <-  as.Date("2011-12-10") - dates ## Subtract from a reference date
+## Keep only the minimum per customer
+Rec <- data %>% group_by(CustomerID) %>% summarise(min = min(days_since))
+```
+Question 1: create object Freq containing the number of purchases by each customer
+
+```{r}
+
+```
+
+create a Monetary variable, the total purchase amount spent by a customer during the span of these data
+
+```{r}
+
+```
+
+Question 2: create vector  Mon containing the total purchased amount by each customer
+
+```{r}
+
+```
+
+Finally, we should assemble these objects to create a new data.frame with one row per customer and three variables (Rec, Freq, and Mon)
+
+```{r}
+
+```
+
+Question 3: Write code that creates a new data.frame named CD with one row per customer, containing the three variables (Rec, Freq, and Mon) corresponding to that customer:
+
+```{r}
+
+```
+
+Question 4: Constructing the Boxplots
+
+```{r}
+
+#add title “RFM Variable Distributions”.
+
+```
+
+Filtering and Transforming (from assignment sheet):
+
+```{r}
+CD <- filter(CD, Mon > 0) # remove customers with negative monetary values (they returned items)
+CD$Mon <- log10(CD$Mon) # apply a log transformation based on the extreme right skew (large number of outliers)
+CD$Freq <- log10(CD$Freq)
+```
+
+Question 5: k-means clustering on the newly transformed data
+
+```{r}
+
+#standardize the data (notice the difference scales of Rec and Mon for example): 
+
+#select an optimal number of clusters using one of the methods we’ve covered: 
+
+#visualize clusters using three different scatter plots (showing the three unique pairings of variables):
+  
+```
+
+           Description of the trends (thinking specifically about customer groups):
