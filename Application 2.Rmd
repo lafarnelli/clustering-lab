@@ -7,10 +7,17 @@ midwest2 <- select(midwest, county, state, popdensity,
                    percollege, percprof, percchildbelowpovert, 
                    percadultpoverty, percelderlypoverty)
 ```
-Question 1: If we don’t rescale the data, popdensity will be a much larger contributor than any of the other variables (which are all percentages bounded between zero and one). For this question (along with the next two), do not rescale any of the variables. Use the elbow method, the silhouette method, and the gap statistic to evaluate the optimal number of clusters for the unscaled data. Does using 3 clusters seem reasonable?
+Question 1: On unscaled data (popdensity is a much larger contributor than any of the other variables), use elbow, silhouette, and gap statistic to evaluate the optimal number of clusters for the unscaled data. 
 
 ```{r}
 ```
+
+```{r}
+```
+
+```{r}
+```
+Using 3 clusters does/doesn't seem reasonable because...
 
 Question 2: The five largest cities contained in these data are Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN). Apply k-means clustering with k=3 to the unscaled data, does one of the three clusters appear to describe these urban centers?
 
@@ -25,6 +32,7 @@ Question 3: Again using k-means clustering with k=3 on the unscaled data, does t
 Question 4: Using the scaled data, assess whether using 3 clusters seems reasonable. Briefly describe your thoughts.
 
 ```{r}
+#rescale data because popdensity is much larger than the other variables, which are percentages
 ```
 Question 5: Using k-means clustering with k = 3 on the scaled data, do these clusters appear to correspond with “rural”, “urban”, and “suburban”? (Hint: start by locating the same large cities mentioned earlier)
 
