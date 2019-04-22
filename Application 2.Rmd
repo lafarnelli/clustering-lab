@@ -20,6 +20,5 @@ Question 3:
 Question 4: 
 
 ```{r}
-#add title “RFM Variable Distributions”.
 ```
 Question 5: 
