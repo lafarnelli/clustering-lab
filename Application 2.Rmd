@@ -22,10 +22,12 @@ Question 1: Evaluating optimal number of clusters for unscaled data:
 ```
 Using 3 clusters does/doesn't seem reasonable because...
 
-Question 2: The five largest cities contained in these data are Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN). Apply k-means clustering with k=3 to the unscaled data, does one of the three clusters appear to describe these urban centers?
+Question 2: Finding Urban Centers Cluster
 
+Apply k-means clustering with k=3 to the unscaled data:
 ```{r}
 ```
+Does one of the three clusters appear to describe the urban centers of Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN)?
 
 Question 3: Again using k-means clustering with k=3 on the unscaled data, does the smaller of the two remaining clusters appear to describe suburban counties? If you aren’t familiar with the geography of the Midwest, try googling a few of the counties you see in this cluster to gauge their proximity to large cities mentioned in the prior question.
 
