@@ -27,20 +27,32 @@ Question 2: Finding Urban Centers Cluster
 Apply k-means clustering with k=3 to the unscaled data:
 ```{r}
 ```
-Does one of the three clusters appear to describe the urban centers of Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN)?
+Cluster [NAME] describes the urban centers of Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN)...
 
-Question 3: Again using k-means clustering with k=3 on the unscaled data, does the smaller of the two remaining clusters appear to describe suburban counties? If you aren’t familiar with the geography of the Midwest, try googling a few of the counties you see in this cluster to gauge their proximity to large cities mentioned in the prior question.
+Question 3: Determining Suburban Cluster
 
-```{r}
-```
+The two remaining clusters are [NAME] and [NAME]. The smaller one does/doesn't appear to describe suburban counties because...
+//mention proximity...
 
-Question 4: Using the scaled data, assess whether using 3 clusters seems reasonable. Briefly describe your thoughts.
+Question 4: Thoughts on using 3 clusters
+
+Our assessment...
 
 ```{r}
 #rescale data because popdensity is much larger than the other variables, which are percentages
 ```
-Question 5: Using k-means clustering with k = 3 on the scaled data, do these clusters appear to correspond with “rural”, “urban”, and “suburban”? (Hint: start by locating the same large cities mentioned earlier)
+Question 5: Finding Urban/Rural Clusters in Scaled Data
+
+```{r}
+#Apply k-means clustering with k=3 to the unscaled data
+```
+Rural cluster:
+Urban cluster:
+Suburban cluster: 
 
 ```{r}
 ```
-Question 6:  Based upon what you’ve seen so far in this application, do you prefer the original or scaled approach? Briefly provide an argument in support of each approach.
+Question 6: Unscaled/Scaled Preference
+Our thoughts... 
+Unscaled is good for...
+Scaled is good because...
