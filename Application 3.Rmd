@@ -1,25 +1,69 @@
 ### Application #3 - Geography of Plant Species
 ```{r}
+## Location of the raw data
+file <- "https://remiller1450.github.io/data/plants.data"
 
+## Get the number of variables (the number of unique fields)
+no_col <- max(count.fields(file, sep = ","))
+plants <- read.table(file,sep=",",fill=TRUE,header = F,col.names=c(1:no_col))
+
+## To make this more manageable we'll use 1000 randomly selected rows
+set.seed(123)
+random_sample <- sample(1:nrow(plants), size = 1000)
+plants <- plants[random_sample,]
+
+names <- plants$X1 ## Extract the plant names
+locations <- levels(unlist(plants[,2:no_col])) ## Extract unique locations
+locations <- locations[-which(locations == "")] ## Remove empty the location
+
+## Set up an empty X matrix to be filled
+X <- matrix(0, nrow = nrow(plants), ncol = length(locations)) 
+colnames(X) <- as.character(locations) ## Name its variables
+
+## Fill the X matrix with 1s where appropriate (location is present for that species)
+## Warning: looping tends to be slow in R
+for(i in 1:nrow(X)) {
+    X[i,] <- as.numeric(colnames(X) %in% as.character(unlist(plants[i,-1])))
+}
+
+## Code each column as a binary factor variable
+XF <- as.data.frame(apply(X, 2, as.factor))
 ```
-Question 1: 
+Using daisy function to calculate Gower distance:
+```{r}
+D <- daisy(XF, metric = "gower")
+```
+Applying PAM clustering with k=10, 
+checking the average silhouette width of these clusters, 
+and printing some other potentially useful information:
+```{r}
+pm <- pam(D, k = 10) ## Apply pam clustering with k = 10
+pm$silinfo$avg.width  ## Average silhouette width
+pm$clusinfo ## Summarizes the cluster sizes
+colMeans(X[pm$clustering == 10,]) ## Used to interpret the cluster
+```
+
+Question 1: Using the distance matrix D from the earlier code, analyze the plants data using PAM clustering. You should justify the number of clusters you choose. Choose one of these clusters to interpret:
 
 ```{r}
 ```
 
 Question 2: 
 
+Setup code:
 ```{r}
+hc <- hclust(D)
+
+dend1 <- as.dendrogram(hc)
+dend2 <- cut(dend1, h = 0.65) ## Cut the dendrogram
+plot(dend2$upper)  ## Plot the cut tree
+
+hc_cut <- cutree(hc, h = 0.65) ## Apply the same cut to the hc cluster object
+table(hc_cut) ## Cluster frequencies
+
+colMeans(X[hc_cut == 5,]) ## Interpret 5th cluster
 ```
+My interpretation of the 2nd cluster:
 
-Question 3: 
-
-```{r}
-```
-
-Question 4: 
-
-```{r}
-```
-Question 5: 
+Question 3 - how you might decide where to cut a dendrogram:
 
