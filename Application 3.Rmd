@@ -33,20 +33,15 @@ Using daisy function to calculate Gower distance:
 ```{r}
 D <- daisy(XF, metric = "gower")
 ```
-Applying PAM clustering with k=10, 
-checking the average silhouette width of these clusters, 
-and printing some other potentially useful information:
+Question 1: Using the distance matrix D from the earlier code, analyze the plants data using PAM clustering. 
 ```{r}
 pm <- pam(D, k = 10) ## Apply pam clustering with k = 10
-pm$silinfo$avg.width  ## Average silhouette width
+pm$silinfo$avg.width  ## checking Average silhouette width
 pm$clusinfo ## Summarizes the cluster sizes
 colMeans(X[pm$clustering == 10,]) ## Used to interpret the cluster
 ```
-
-Question 1: Using the distance matrix D from the earlier code, analyze the plants data using PAM clustering. You should justify the number of clusters you choose. Choose one of these clusters to interpret:
-
-```{r}
-```
+I chose [NUMBER] clusters because...
+Let's consider cluster [NUMBER]...interpretation...
 
 Question 2: 
 
