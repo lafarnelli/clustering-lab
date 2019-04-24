@@ -1,4 +1,8 @@
-### Application #1 - Customer Segmentation
+---
+title: "Clustering Application #1 - Customer Segmentation"
+author: "LaAnna Farnelli, Aru Fatehpuria & Emma Foulkes"
+date: "April 22, 2019"
+output: html_document
 
 ```{r}
 data <- read.csv("https://remiller1450.github.io/data/OnlineRetail.csv") ## This takes a long time, the data contain >500k records
