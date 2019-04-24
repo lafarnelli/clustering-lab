@@ -1,13 +1,31 @@
+---
+title: "Application 3"
+author: "Emma Foulkes and LaAnna Farnelli"
+date: "April 23, 2019"
+output: html_document
+---
 
-### Application #3 - Geography of Plant Species
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(factoextra)
+library(cluster)
+library(dplyr)
+```
+
+## Data Set-Up
 
 The following code is setup from your example and application description in the Clustering Lab document:
 ```{r}
 ## Location of the raw data
 file <- "https://remiller1450.github.io/data/plants.data"
+
 ## Get the number of variables (number of unique fields)
 no_col <- max(count.fields(file, sep = ","))
 plants <- read.table(file,sep=",",fill=TRUE,header = F,col.names=c(1:no_col))
+
 ## To make this more manageable we'll use 1000 randomly selected rows
 set.seed(123)
 random_sample <- sample(1:nrow(plants), size = 1000)
@@ -15,9 +33,11 @@ plants <- plants[random_sample,]
 names <- plants$X1 ## Extract the plant names
 locations <- levels(unlist(plants[,2:no_col])) ## Extract unique locations
 locations <- locations[-which(locations == "")] ## Remove empty the location
+
 ## Set up an empty X matrix to be filled
 X <- matrix(0, nrow = nrow(plants), ncol = length(locations)) 
 colnames(X) <- as.character(locations) ## Name its variables
+
 ## Fill the X matrix with 1s where appropriate (location is present for that species)
 ## Warning: looping tends to be slow in R
 for(i in 1:nrow(X)) {
@@ -25,20 +45,21 @@ for(i in 1:nrow(X)) {
 }
 ## Code each column as a binary factor variable
 XF <- as.data.frame(apply(X, 2, as.factor))
-
 D <- daisy(XF, metric = "gower") #use the daisy function to calculate Gower distance
 ```
-Question 1: Analyzing the plants data using PAM clustering: 
+
+##Question 1
+
 ```{r}
 D <- daisy(XF, metric = "gower") #using daisy function to calculate Gower distance
 pm <- pam(D, k = 2) ## Apply pam clustering with k = 2
 pm$silinfo$avg.width  ## checking Average silhouette width to keep it closer to 1 than -1
 ```
-I chose 2 clusters because that k value yields a higher average silhouette width (.72, closest to 1) of all the options between k=2 and k=10. Let's consider cluster 2:
-```{r}
-colMeans(X[pm$clustering == 2,])
-```
-Question 2: 
+
+I chose 2 clusters because that k value yields a higher average silhouette width (.72, closest to 1) of all the options between k=2 and k=10. I will be interpreting cluster #2 in the following question.
+
+## Question 2
+
 ```{r}
 hc <- hclust(D)
 dend1 <- as.dendrogram(hc)
@@ -47,11 +68,15 @@ plot(dend2$upper)  ## Plot the cut tree
 hc_cut <- cutree(hc, h = 0.65) ## Apply the same cut to the hc cluster object
 table(hc_cut) ## Cluster frequencies
 ```
+
 My interpretation of the 2nd cluster:
+
 ```{r}
 colMeans(X[hc_cut == 2,]) ## Interpret 2nd cluster
+
+clusplot(pm, main = "Cluster Plot, k=2", color = TRUE)
 ```
 
-Question 3 - how you might decide where to cut a dendrogram: 
-There is no definitive answer since cluster analysis is essentially an exploratory approach; the interpretation of the resulting hierarchical structure is context-dependent and often several solutions are equally good from a theoretical point of view. You can use 
-stop-criteria for agglomerative hierarchical clustering including visual criteria, e.g. silhouette plots, and some kind of numerical criteria. Basically, we want to know how well the original distance matrix is approximated in the cluster space. I also use k-means, with several starting values, and the gap statistic (mirror) to determine the number of clusters that minimize the within-SS. 
+## Question 3
+
+There is no definitive answer since cluster analysis is essentially an exploratory approach; the interpretation of the resulting hierarchical structure is context-dependent and often several solutions are equally good from a theoretical point of view. You can use stop-criteria for agglomerative hierarchical clustering including visual criteria, e.g. silhouette plots, and some kind of numerical criteria. Basically, we want to know how well the original distance matrix is approximated in the cluster space. I also use k-means, with several starting values, and the gap statistic (mirror) to determine the number of clusters that minimize the within-SS. 
