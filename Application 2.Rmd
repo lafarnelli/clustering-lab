@@ -1,6 +1,6 @@
 ---
 title: "Application 2"
-author: "Emma Foulkes and LaAnna Farnelli"
+author: "LaAnna Farnelli, Aru Fatehpuria & Emma Foulkes"
 date: "April 22, 2019"
 output: html_document
 ---
@@ -8,8 +8,6 @@ output: html_document
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
 ```
-
-
 ```{r}
 #install.packages("ggplot2")
 #install.packages("dplyr")
