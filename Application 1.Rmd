@@ -14,16 +14,23 @@ data$days_since <-  as.Date("2011-12-10") - dates ## Subtract from a reference d
 Rec <- data %>% group_by(CustomerID) %>% summarise(min = min(days_since))
 Rec <- as.numeric(Rec)
 ```
-Question 1: Creating new variables
+```{r}
+library(factoextra)
+library(dplyr)
+library(tidyr)
+library(ggplot2)
+library(cluster)
+```
+Questions 1-2: Creating new variables
 
-First, I create Freq containing the number of purchases by each customer:
+First, we create Freq containing the number of purchases by each customer:
 ```{r}
 Freq <- data %>%
 group_by(CustomerID) %>%
 summarize(count = n()) #based on Hint: The command summarize(count = n()) will return the number of rows...
 ```
 
-Question 2: create vector  Mon containing the total purchased amount by each customer
+Next we can create a vector Mon containing the total purchased amount by each customer:
 
 ```{r}
 Mon <- data %>%
@@ -31,16 +38,16 @@ group_by(CustomerID) %>%
 summarize(total_purchase = sum(Quantity*UnitPrice))
 ```
 
-Question 3: Write code that creates a new data.frame named CD with one row per customer, containing the three variables (Rec, Freq, and Mon) corresponding to that customer:
+Question 3: Creating new data.frame CD 
+
+CD should have one row per customer, containing the three variables (Rec, Freq, and Mon) corresponding to that customer:
 
 ```{r}
 CD <- left_join(x = Rec, y = Mon, by = "CustomerID")
 CD <- left_join(x = CD, y = Freq, by = "CustomerID")
-
 names(CD)[names(CD)=="min"] <- "Rec"
 names(CD)[names(CD)=="total_purchase"] <- "Mon"
 names(CD)[names(CD)=="count"] <- "Freq"
-
 CD = subset(CD, select = -(CustomerID))
 ```
 
@@ -48,11 +55,8 @@ Question 4: Constructing the Boxplots
 
 ```{r}
 CD1 <- gather(CD, key = "Var", value = "Val") #based on Hint: consider using gather to create a “long” version of your CD data.frame
-
 CD1 <- separate(CD1, col = "Var", into = c("Model"))
-
-ggplot(CD1, aes(x = , y = Val)) + geom_boxplot() + coord_flip() + facet_wrap(~ Model, scales = "free") + labs(title="RFM Variable Distributions") #add title “RFM Variable Distributions” according to instructions; "x = " based on 3rd hint
-
+ggplot(CD1, aes(x = , y = Val)) + geom_boxplot() + coord_flip() + facet_wrap(~ Model, scales = "free") + labs(title="RFM Variable Distributions") #add title “RFM Variable Distributions” according to instructions
 ```
 Filtering and Transforming (from assignment sheet):
 
@@ -63,21 +67,15 @@ CD$Mon <- log10(CD$Mon) # apply a log transformation based on the extreme right 
 CD$Freq <- log10(CD$Freq)
 ```
 
-Hint: Use something like Rec = as.numeric(Rec$min) when constructing your CD data.frame. If you don’t coerce this variable’s type to numeric, it will give you problems in the clustering functions.
-
-
-
 Question 5: k-means clustering on the newly transformed data
 
 ```{r}
-
 #standardize the data (notice the difference scales of Rec and Mon for example): 
 CD <- scale(CD, center = TRUE, scale = TRUE)
 #select an optimal number of clusters using one of the methods we’ve covered: 
 fviz_nbclust(CD, kmeans, method = "silhouette", k.max = 8)
 #visualize clusters using three different scatter plots (showing the three unique pairings of variables):
 k1 <- kmeans(CD, centers = 2, nstart = 25)  
-
 CD <- as.data.frame(CD)
 ggplot(CD, aes(x=Rec, y=Mon)) + geom_point()
 ```
