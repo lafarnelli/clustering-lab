@@ -8,56 +8,52 @@ dates <- as.Date(substr(data$InvoiceDate,1,10), "%m/%d/%Y") ## Extract only the 
 data$days_since <-  as.Date("2011-12-10") - dates ## Subtract from a reference date
 ## Keep only the minimum per customer
 Rec <- data %>% group_by(CustomerID) %>% summarise(min = min(days_since))
+Rec <- as.numeric(Rec)
 ```
 Question 1: Creating new variables
 
 First, I create Freq containing the number of purchases by each customer:
 ```{r}
-#generate frequency table for InvoiceNo
-Freq<-
-#join to add Freq to my set
-```
-
-I also want to create Monetary, the total purchase amount spent by a customer during the span of these data:
-
-```{r}
-
+Freq <- data %>%
+group_by(CustomerID) %>%
+summarize(count = n()) #based on Hint: The command summarize(count = n()) will return the number of rows...
 ```
 
 Question 2: create vector  Mon containing the total purchased amount by each customer
 
 ```{r}
-
-```
-
-Finally, we should assemble these objects to create a new data.frame with one row per customer and three variables (Rec, Freq, and Mon)
-
-```{r}
-
+Mon <- data %>%
+group_by(CustomerID) %>%
+summarize(total_purchase = sum(Quantity*UnitPrice))
 ```
 
 Question 3: Write code that creates a new data.frame named CD with one row per customer, containing the three variables (Rec, Freq, and Mon) corresponding to that customer:
 
 ```{r}
+CD <- left_join(x = Rec, y = Mon, by = "CustomerID")
+CD <- left_join(x = CD, y = Freq, by = "CustomerID")
 
+names(CD)[names(CD)=="min"] <- "Rec"
+names(CD)[names(CD)=="total_purchase"] <- "Mon"
+names(CD)[names(CD)=="count"] <- "Freq"
+
+CD = subset(CD, select = -(CustomerID))
 ```
 
 Question 4: Constructing the Boxplots
 
 ```{r}
+CD1 <- gather(CD, key = "Var", value = "Val") #based on Hint: consider using gather to create a “long” version of your CD data.frame
 
-#add title “RFM Variable Distributions”.
+CD1 <- separate(CD1, col = "Var", into = c("Model"))
+
+ggplot(CD1, aes(x = , y = Val)) + geom_boxplot() + coord_flip() + facet_wrap(~ Model, scales = "free") + labs(title="RFM Variable Distributions") #add title “RFM Variable Distributions” according to instructions; "x = " based on 3rd hint
 
 ```
-Hint: The command summarize(count = n()) will return the number of rows. If you supply a data.frame that was grouped by another variable, the command will return the number of rows for each unique value of the grouping variable
-
-Hint: To construct the boxplots in Question #4, you should consider using gather from the tidyr package to create a “long” version of your CD data.frame
-
-Hint: Your boxplot code might be similar to  ggplot(LCD, aes(y = SOMETHING)) + geom_boxplot() + coord_flip() + facet_grid(SOMETHING, scales = "free"). Note that boxplots can be created by providing only a Y variable, but not by providing only an X variable.
-
 Filtering and Transforming (from assignment sheet):
 
 ```{r}
+CD$Rec <- as.numeric(as.character(Rec$min))
 CD <- filter(CD, Mon > 0) # remove customers with negative monetary values (they returned items)
 CD$Mon <- log10(CD$Mon) # apply a log transformation based on the extreme right skew (large number of outliers)
 CD$Freq <- log10(CD$Freq)
@@ -72,15 +68,24 @@ Question 5: k-means clustering on the newly transformed data
 ```{r}
 
 #standardize the data (notice the difference scales of Rec and Mon for example): 
-
+CD <- scale(CD, center = TRUE, scale = TRUE)
 #select an optimal number of clusters using one of the methods we’ve covered: 
-
+fviz_nbclust(CD, kmeans, method = "silhouette", k.max = 8)
 #visualize clusters using three different scatter plots (showing the three unique pairings of variables):
-  
-```
+k1 <- kmeans(CD, centers = 2, nstart = 25)  
 
-           Description of the trends (thinking specifically about customer groups):
-           
-Comments from Prof. Miller: 
- - Clustering functions, similiar to what saw with PCA, use all of the variables in the data.frame you supply them with. This means that you should remove ID variables like CustomerID or City/State when using clustering functions.
- - When interpretting clustering results, we are primarily interested in describing what makes certain cluster members similar (ie: what do members of cluster #k have in common?)
+CD <- as.data.frame(CD)
+ggplot(CD, aes(x=Rec, y=Mon)) + geom_point()
+```
+People who have  gone to the store recently are more likely to spend more money than people, or at least a wider range of amounts, as compared to people who have not gone to the store recently.
+
+```{r}
+ggplot(CD, aes(x=Mon, y=Freq)) + geom_point()
+```
+People who spend more money at the store are more likely to buy the products in larger quantities. 
+
+```{r}
+ggplot(CD, aes(x=Rec, y=Freq)) + geom_point()
+```
+People who have been to the store recently are more likely to buy a wider range of amount of products whereas people who have not been to the store recently are likely to buy lower amount of products.
+
