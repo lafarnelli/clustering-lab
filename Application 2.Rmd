@@ -1,58 +1,97 @@
-### Application #2 - Evaluating Rural-Urban-Suburban Designations
+---
+title: "Application 2"
+author: "Emma Foulkes and LaAnna Farnelli"
+date: "April 22, 2019"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
 ```{r}
+#install.packages("ggplot2")
+#install.packages("dplyr")
+#install.packages("cluster")
+#install.packages("factoextra")
+library(ggplot2)
+library(dplyr)
+library(cluster)
+library(factoextra)
+
 data("midwest")
-## Restrict the variables used in the clustering
 midwest2 <- select(midwest, county, state, popdensity, 
                    percwhite, percblack, percasian, perchsd, 
                    percollege, percprof, percchildbelowpovert, 
                    percadultpoverty, percelderlypoverty)
+midwest3 <- select(midwest2, popdensity, 
+                   percwhite, percblack, percasian, perchsd, 
+                   percollege, percprof, percchildbelowpovert, 
+                   percadultpoverty, percelderlypoverty)
 ```
-Question 1: Evaluating optimal number of clusters for unscaled data: 
+
+## Question 1
+
+###Elbow Method
 
 ```{r}
-#elbow
+fviz_nbclust(na.omit(midwest3), kmeans, method = "wss", k.max = 8)
 ```
+
+###Silhouette Method
 
 ```{r}
-#silhouette
+fviz_nbclust(midwest3, kmeans, method = "silhouette", k.max = 8)
 ```
+
+###Gap Statistic
 
 ```{r}
-#gap statistic
+fviz_nbclust(na.omit(midwest3), kmeans, method = "gap", k.max = 8)
 ```
-Using 3 clusters does/doesn't seem reasonable because...
 
-Question 2: Finding Urban Centers Cluster
+Given the 3 visual methods to test for number of clusters, it seems that either 2 or 3 clusters would be the best for the analysis.
 
-Apply k-means clustering with k=3 to the unscaled data:
-```{r}
-```
-Cluster [NAME] describes the urban centers of Chicago (Cook County IL), Cleveland (Cuyahoga County OH), Detroit (Wayne County MI), Milwaukee (Milwaukee County WI), and Indianapolis (Marion County IN)...
-
-Question 3: Determining Suburban Cluster
-
-The two remaining clusters are [NAME] and [NAME]. The smaller one does/doesn't appear to describe suburban counties because...
-//mention proximity...
-
-Question 4: Thoughts on using 3 clusters
-
-Our assessment...
+## Question 2
 
 ```{r}
-#rescale data because popdensity is much larger than the other variables, which are percentages
+k3 <- kmeans(midwest3, centers = 3, nstart = 25)
+fviz_cluster(k3, data = midwest3, choose.vars = c("popdensity", "percwhite"))
 ```
-Question 5: Finding Urban/Rural Clusters in Scaled Data
+
+The Blue triangular cluster seems to represent the five largeset counties/cities in the data. 
+
+## Question 3
+
+For the remaining clusters, the smaller of the two triangles do seem to represent suburban counties. Given the measures choosen for the axes, these have higher population densities, as characteristic of urban areas. Also, there are fewer of them which is consistent with the geography of the midwest being predominantly rural. 
+
+## Question 4
 
 ```{r}
-#Apply k-means clustering with k=3 to the unscaled data
+std_midwest <- scale(midwest3)
+fviz_nbclust(na.omit(std_midwest), kmeans, method = "wss", k.max = 8)
+
+fviz_nbclust(na.omit(std_midwest), kmeans, method = "silhouette", k.max = 8)
+
+fviz_nbclust(na.omit(std_midwest), kmeans, method = "gap", k.max = 8)
 ```
-Rural cluster:
-Urban cluster:
-Suburban cluster: 
+
+Based on the elbow method above, it seems that the best number of clusters would be closer to 4 or 5. Hoewver, the 
+
+## Question 5
 
 ```{r}
+ks <- kmeans(std_midwest, centers = 3, nstart = 25)
+fviz_cluster(ks, data = std_midwest)
+
+fviz_cluster(ks, data = std_midwest, choose.vars = c("popdensity", "percwhite"))
 ```
-Question 6: Unscaled/Scaled Preference
-Our thoughts... 
-Unscaled is good for...
-Scaled is good because...
+
+The clusters seem to be still based on population density as all the urban areas are in the same cluster. However, the clusters are larger and therefore do not seem to be fully urban, suburban, and rural as the previous clusters were.
+
+## Question 6
+
+For the unscaled approach, the clusters seem to be much more categorical as there is clusters based on area type (urban, suburban, or rural). This would be useful for analyses that are done by a category such as region or country level time-series analyses.
+
+For the scaled approach, the clusters are much closer in size. This would be useful for an analysis were groups need to have rouhly the same number of observations.
