@@ -21,7 +21,7 @@ library(tidyr)
 library(ggplot2)
 library(cluster)
 ```
-Questions 1-2: Creating new variables
+## Questions 1-2: Creating new variables
 
 First, we create Freq containing the number of purchases by each customer:
 ```{r}
@@ -38,7 +38,7 @@ group_by(CustomerID) %>%
 summarize(total_purchase = sum(Quantity*UnitPrice))
 ```
 
-Question 3: Creating new data.frame CD 
+## Question 3: Creating new data.frame CD 
 
 CD should have one row per customer, containing the three variables (Rec, Freq, and Mon) corresponding to that customer:
 
@@ -51,7 +51,7 @@ names(CD)[names(CD)=="count"] <- "Freq"
 CD = subset(CD, select = -(CustomerID))
 ```
 
-Question 4: Constructing the Boxplots
+## Question 4: Constructing the Boxplots
 
 ```{r}
 CD1 <- gather(CD, key = "Var", value = "Val") #based on Hint: consider using gather to create a “long” version of your CD data.frame
@@ -67,7 +67,7 @@ CD$Mon <- log10(CD$Mon) # apply a log transformation based on the extreme right 
 CD$Freq <- log10(CD$Freq)
 ```
 
-Question 5: k-means clustering on the newly transformed data
+## Question 5: k-means clustering on the newly transformed data
 
 ```{r}
 #standardize the data (notice the difference scales of Rec and Mon for example): 
