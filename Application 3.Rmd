@@ -2,30 +2,24 @@
 ```{r}
 ## Location of the raw data
 file <- "https://remiller1450.github.io/data/plants.data"
-
 ## Get the number of variables (the number of unique fields)
 no_col <- max(count.fields(file, sep = ","))
 plants <- read.table(file,sep=",",fill=TRUE,header = F,col.names=c(1:no_col))
-
 ## To make this more manageable we'll use 1000 randomly selected rows
 set.seed(123)
 random_sample <- sample(1:nrow(plants), size = 1000)
 plants <- plants[random_sample,]
-
 names <- plants$X1 ## Extract the plant names
 locations <- levels(unlist(plants[,2:no_col])) ## Extract unique locations
 locations <- locations[-which(locations == "")] ## Remove empty the location
-
 ## Set up an empty X matrix to be filled
 X <- matrix(0, nrow = nrow(plants), ncol = length(locations)) 
 colnames(X) <- as.character(locations) ## Name its variables
-
 ## Fill the X matrix with 1s where appropriate (location is present for that species)
 ## Warning: looping tends to be slow in R
 for(i in 1:nrow(X)) {
     X[i,] <- as.numeric(colnames(X) %in% as.character(unlist(plants[i,-1])))
 }
-
 ## Code each column as a binary factor variable
 XF <- as.data.frame(apply(X, 2, as.factor))
 ```
@@ -35,30 +29,28 @@ D <- daisy(XF, metric = "gower")
 ```
 Question 1: Using the distance matrix D from the earlier code, analyze the plants data using PAM clustering. 
 ```{r}
-pm <- pam(D, k = 10) ## Apply pam clustering with k = 10
-pm$silinfo$avg.width  ## checking Average silhouette width
-pm$clusinfo ## Summarizes the cluster sizes
-colMeans(X[pm$clustering == 10,]) ## Used to interpret the cluster
+D <- daisy(XF, metric = "gower") #using daisy function to calculate Gower distance
+pm <- pam(D, k = 2) ## Apply pam clustering with k = 2
+pm$silinfo$avg.width  ## checking Average silhouette width to keep it closer to 1 than -1
 ```
-I chose [NUMBER] clusters because...
-Let's consider cluster [NUMBER]...interpretation...
+I chose 2 clusters because that k value yields a higher average silhouette width (.72, closest to 1) of all the options between k=2 and k=10. Let's consider cluster 2:  
+```{r}
+pm$clusinfo ## Summarizes the cluster sizes
+colMeans(X[pm$clustering == 2,]) ## Used to interpret the cluster
+```
 
 Question 2: 
 
 Setup code:
 ```{r}
 hc <- hclust(D)
-
 dend1 <- as.dendrogram(hc)
 dend2 <- cut(dend1, h = 0.65) ## Cut the dendrogram
 plot(dend2$upper)  ## Plot the cut tree
-
 hc_cut <- cutree(hc, h = 0.65) ## Apply the same cut to the hc cluster object
 table(hc_cut) ## Cluster frequencies
-
-colMeans(X[hc_cut == 5,]) ## Interpret 5th cluster
+colMeans(X[hc_cut == 2,]) ## Interpret 2nd cluster
 ```
 My interpretation of the 2nd cluster:
 
 Question 3 - how you might decide where to cut a dendrogram:
-
