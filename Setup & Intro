@@ -9,7 +9,9 @@ output: html_document
 knitr::opts_chunk$set(echo = TRUE)
 ```
 ```{r}
-#install.packages("factoextra")
+library(factoextra)
+library(dplyr)
+library(cluster)
 ```
 
 ## FROM THE READING
@@ -19,8 +21,6 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 data("USArrests")
 k2 <- kmeans(USArrests, centers = 2, nstart = 25)
-library(factoextra)
-library(dplyr)
 ```
 ```{r}
 fviz_cluster(k2, data = USArrests, repel=TRUE) #fviz_cluster visualizes clusters using the first two principle components to define the X-Y coordinates of each observation
@@ -59,7 +59,6 @@ The average silhouette metric suggests that using 2 clusters is optimal.
 We can also use silhouettes to assess individual observations:
 
 ```{r}
-library(cluster)
 set.seed(123)
 k2 <- kmeans(USArrests, centers = 2, nstart = 25)
 sil <- silhouette(k2$cluster, dist(USArrests), ordered = FALSE)
