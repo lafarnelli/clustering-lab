@@ -1,9 +1,7 @@
----
-title: "Application 3"
-author: "Emma Foulkes and LaAnna Farnelli"
-date: "April 23, 2019"
+title: "Clustering Application #3 - Geography of Plant Species"
+author: "LaAnna Farnelli, Aru Fatehpuria & Emma Foulkes"
+date: "April 22, 2019"
 output: html_document
----
 
 ```{r setup, include=FALSE}
 knitr::opts_chunk$set(echo = TRUE)
